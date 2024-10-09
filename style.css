@@ -34,3 +34,21 @@
     top: 10%;
     right: 20px;
 }
+h2{
+    padding-top: 100px;
+}
+.circuitInfo{
+    margin: auto;
+    width: 75%;
+    text-align: center;
+}
+
+.circuit{
+    width: 75%;
+    height: auto;
+}
+
+.Arrow{
+    height: 50%;
+    width: 50%;
+}

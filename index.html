@@ -16,23 +16,50 @@
             }).gmap('get', 'map');
 
             //called when marker is clicked
-            function updatePage() {
+            function updatePage(showId) {
                 setTimeout(function() {
                     if(mapShowing) {
                         $('#myMap').show();
+                        $('.circuitInfo').hide();
                     }
                     else{
                         $('#myMap').hide();
+                        $('#' + showId).show();
                     }
                 }, 7000);
             }
-            //Marker at bahrain
-            let bahrain = $('#myMap').gmap('addMarker',{'position': '26.0321,50.5108'}).click(function(){
-                var markPos = new google.maps.LatLng(26.0321,50.5108);
-                smoothZoom(myMap, 14.5, myMap.getZoom(), markPos);
-                mapShowing = false;
-                updatePage();
-            });
+
+            function addMarker(position, circuitId) {
+                $('#myMap').gmap('addMarker', {'position': position}).click(function() {
+                    var markerPos = new google.maps.LatLng(position.split(',')[0], position.split(',')[1]);
+                    smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos);
+                    mapShowing = false;
+                    updatePage(circuitId);
+                });
+            }
+            addMarker('26.0321,50.5108', 'bahrain');
+            addMarker('21.63194, 39.1044', 'saudiArabia');
+            addMarker('47.21972, 14.76472', 'austria');
+            addMarker('-37.8470, 144.9740', 'australia');
+            addMarker('34.8417, 136.5389', 'japan');
+            addMarker('31.338889, 121.219722', 'china');
+            addMarker('25.958056, -80.238889', 'miami');
+            addMarker('44.341111, 11.713333', 'imola');
+            addMarker('43.734722, 7.420556', 'monaco');
+            addMarker('45.500556, -73.5225', 'canada');
+            addMarker('41.57015000859392, 2.2581662238152087', 'spain');
+            addMarker('52.069479725314835, -1.0223525375649898', 'britain');
+            addMarker('47.57988934203045, 19.247394539664125', 'hunargy');
+            addMarker('50.442190512081545, 5.96686326186287', 'belgium');
+            addMarker('52.38915327473617, 4.54021685255138', 'netherlands');
+            addMarker('45.61768409264565, 9.281191844130136', 'monza');
+            addMarker('40.373336753627285, 49.853121765036526', 'baku');
+            addMarker('30.13293099150061, -97.64047687456215', 'austin');
+            addMarker('19.40572606849136, -99.09260911904308', 'mexico');
+            addMarker('-23.70454316404402, -46.69920944869672', 'brazil');
+            addMarker('36.11000572950081, -115.16194624550671', 'vegas');
+            addMarker('25.488765723411916, 51.450521254127864', 'qatar');
+            addMarker('24.469924007404288, 54.60563723875567', 'abuDhabi');
             //Recursively call smoothZoom to zoom in 0.5 at a time
             function smoothZoom(map, maxZoom, curZoom, pos){
                 if(curZoom >= maxZoom){
@@ -52,10 +79,16 @@
     </head>
 <body>
     <div class="banner">
-        <h2>Interactive F1 Map!</h2>
+        <h1>Interactive F1 Map!</h1>
         <button id="reopenMap">Choose Again!</button>
     </div>
 
     <div id="myMap"></div>
+
+    <div id="australia" class="circuitInfo">
+        <h2>Australian Grand Prix</h2>
+        <img src="assets/Australia_Circuit.jpg" class="circuit">
+        <img src="assets/ARROW.png" class="Arrow">
+    </div>
 </body>
 </html>
