@@ -74,6 +74,15 @@
                     }, 150);
                 }
             }
+
+            //Reopen Map BUTTON:
+            $('#reopenMap').click(function(){
+                mapShowing = true;
+                $('.circuitInfo').hide();
+                $('#myMap').show();
+                myMap.setZoom(1.9);
+                myMap.setCenter();
+            })
         })
     </script>
     </head>
