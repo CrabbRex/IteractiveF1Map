@@ -1,3 +1,7 @@
+body{
+    height: 600vh;
+}
+
 #myMap{
     width: 1080px;
     height: 720px;
@@ -25,7 +29,6 @@
     color: black;
     padding: 20px;
     text-align: center;
-    text-decoration: none;
     display: inline-block;
     font-size: 16px;
     margin: 4px 2px;
@@ -41,6 +44,7 @@ h2{
     margin: auto;
     width: 75%;
     text-align: center;
+    position: relative;
 }
 
 .circuit{
@@ -49,6 +53,40 @@ h2{
 }
 
 .Arrow{
-    height: 50%;
-    width: 50%;
+    height: 350px;
+    width: 400px;
+    position: absolute;
+    top: 115%;
+    left: 10%;
+}
+
+.fixed{
+    position: fixed;
+    top: 35%;
+    left: 20.3%;
+}
+
+#fastestLap{
+    position: absolute;
+    width: 66%;
+    right: 200px;
+}
+
+#Charles{
+    position: absolute;
+    right: 15px;
+    width: 25%;
+}
+.videoRow{
+    display: flex;
+}
+#p1{
+    position: absolute;
+    top: 230%;
+    right: 10%;
+}
+#p2{
+    position: absolute;
+    top: 375%;
+    right: 5%;
 }
