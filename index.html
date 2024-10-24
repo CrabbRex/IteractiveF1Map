@@ -99,49 +99,14 @@
                     $('.Arrow').addClass('fixed');
                 }
                 else {
+                    $('.Arrow').fadeOut();  
                     $('.Arrow').removeClass('fixed');
                 }
             })
 
-            // $(document).scroll(function() {
-            //     let scrollTop = $(this).scrollTop();
-            //     let windowHeight = $(window).height();
-            //     console.log($('.Arrow').offset().top)
-            //     console.log(scrollTop);
-            //     console.log(windowHeight/2);
-
-            //     if(scrollTop >= (windowHeight/2) && scrollTop < 1200){
-            //         $('.Arrow').show();
-            //         if(scrollTop <= 435){
-            //             $('.Arrow').css({
-            //                 postion: 'absolute',
-            //                 top: '50%',
-            //                 left: '10%',
-            //                 transform: 'none'
-            //             });
-            //         }
-            //         else {
-            //             $('.Arrow').css({
-            //                 position: 'fixed',
-            //                 top: '50%',
-            //                 left: '10%',
-            //                 transform: 'translateY(-50%)'
-            //             });
-            //         }
-            //     }
-            //     else if(scrollTop >= 1200){
-            //         $('.Arrow').hide();
-            //     }
-            //     else if(scrollTop < 600){
-            //         $('.Arrow').css({
-            //             position: 'absolute',
-            //             top: windowHeight - 175 + 'px',
-            //             left: '10%',
-            //             transform: 'none'
-            //         }).show();
-            //     }
-            // })
-
+            $('#tutorialButton').click(function (){
+                $('#tutorial').slideUp();
+            })
             })
     </script>
     </head>
@@ -149,6 +114,19 @@
     <div class="banner">
         <h1>Interactive F1 Map!</h1>
         <button id="reopenMap">Choose Again!</button>
+    </div>
+
+    <div id="tutorial">
+        <p>
+            Welcome to the Interactive Formula 1 Map!<br>
+            This map relates to the current 2024 Formula 1 season.<br>
+            <br>
+            How it works:<br>
+            Pick your favourite palce on the Formula 1 calander using the map.<br>
+            Scroll to find out more about that track.<br>
+            Choose a new track using the button in the top right<br>
+        </p>
+        <button id="tutorialButton">Get Started!</button>
     </div>
 
     <div id="myMap"></div>
@@ -160,8 +138,7 @@
         <img src="assets/ARROW.png" class="Arrow">
         <p id="p1">The first race at the Albert Park crcuit was in 1988</p>
         <p id="p2">
-            Here is a video of the fastest lap EVER recorded at the circuit.<br>
-            Set by Charles Leclerc in 2022.
+            Find out more about the track below!
         </p>
         <div class="videoRow">
             <video id="fastestLap" controls width="1000">
@@ -175,6 +152,8 @@
 </html>
 
 <!-- IDEAS:
+ Here is a video of the fastest lap EVER recorded at the circuit.<br>
+            Set by Charles Leclerc in 2022.
         - Fastest Lap - "Want to see my fastest lap? Click me!"
         - Most wins
         - Tires?
