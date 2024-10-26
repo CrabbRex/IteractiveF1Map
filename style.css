@@ -1,5 +1,19 @@
+@font-face {
+    font-family: "F1-Bold";
+    src: url(Formula1-Bold.otf);
+}
+@font-face {
+    font-family: "F1-Regular";
+    src: url(Formula1-Regular.otf);
+}
+@font-face {
+    font-family: "F1-Wide";
+    src: url(Formula1-Wide.otf);
+}
+
 body{
     height: 600vh;
+    font-family: 'F1-Bold';
 }
 
 #myMap{
@@ -51,7 +65,7 @@ h2{
 }
 .circuitInfo{
     margin: auto;
-    width: 75%;
+    width: 80%;
     text-align: center;
     position: relative;
 }
@@ -65,7 +79,7 @@ h2{
     height: 350px;
     width: 400px;
     position: absolute;
-    top: 115%;
+    top: 150%;
     left: 10%;
 }
 
@@ -98,4 +112,8 @@ h2{
     position: absolute;
     top: 375%;
     right: 10%;
+}
+h3{
+    padding-top: 50px;
+    font-size: 50px;
 }
