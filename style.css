@@ -1,3 +1,6 @@
+/* All Credit for Fonts to Formula 1
+    Downloaded from https://imjustcreative.com/download-f1-fonts-formula-1-fonts/2021/09/16 */
+
 @font-face {
     font-family: "F1-Bold";
     src: url(Formula1-Bold.otf);
@@ -12,7 +15,7 @@
 }
 
 body{
-    height: 600vh;
+    height: 1200vh;
     font-family: 'F1-Bold';
 }
 
@@ -60,6 +63,9 @@ body{
     top: 10%;
     right: 20px;
 }
+
+/* Post Track Chosen */
+
 h2{
     padding-top: 100px;
 }
@@ -79,41 +85,90 @@ h2{
     height: 350px;
     width: 400px;
     position: absolute;
-    top: 150%;
-    left: 10%;
+    top: 125%;
+    left: 5%;
 }
 
 .fixed{
     position: fixed;
     top: 35%;
-    left: 20.3%;
+    left: 14.3%;
+}
+.Charles{
+    position: absolute;
+    right: 5%;
+    width: 375px;
+    top: 550%;
+    cursor: pointer;
+}
+.CharlesFixed{
+    position: fixed;
+    top: 25%;
+    width: 25%;
+    right: 15%;
+    cursor: pointer;
 }
 
 #fastestLap{
-    position: absolute;
-    width: 66%;
-    right: 200px;
+    position: fixed;
+    width: 50%;
+    left: 100px;
+    top: 35%;
+    z-index: 2;
 }
 
-#Charles{
-    position: absolute;
-    right: 15px;
-    width: 25%;
-}
 .videoRow{
     display: flex;
 }
 #p1{
+    left: 50%;
     position: absolute;
     top: 230%;
-    right: 10%;
+    text-align: left;
+    padding-left: auto;
 }
 #p2{
     position: absolute;
     top: 375%;
-    right: 10%;
+    left: 50%;
+    text-align: center;
+}
+#p3{
+    position: absolute;
+    top: 450%;
+    left: 50%;
+    text-align: center;
+    margin-right: auto;
 }
 h3{
     padding-top: 50px;
     font-size: 50px;
+}
+#p4{
+    position: absolute;
+    top: 550%;
+    left: 10%;
+    text-align: center;
+    margin-left: auto;
+}
+#p5{
+    position: absolute;
+    top: 650%;
+    left: 10%;
+    text-align: center;
+    margin-left: auto;
+}
+#p6{
+    position: absolute;
+    top: 750%;
+    left: 10%;
+    text-align: center;
+    margin-left: auto;
+}
+#p7{
+    position: absolute;
+    top: 850%;
+    left: 10%;
+    text-align: center;
+    margin-left: auto;
 }
