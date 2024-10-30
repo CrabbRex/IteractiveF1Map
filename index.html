@@ -34,9 +34,8 @@
             function addMarker(position, circuitId) {
                 $('#myMap').gmap('addMarker', {'position': position}).click(function() {
                     var markerPos = new google.maps.LatLng(position.split(',')[0], position.split(',')[1]);
-                    smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos);
+                    smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos, circuitId);
                     mapShowing = false;
-                    updatePage(circuitId);
                 });
             }
             addMarker('26.0321,50.5108', 'bahrain');
@@ -63,16 +62,19 @@
             addMarker('25.488765723411916, 51.450521254127864', 'qatar');
             addMarker('24.469924007404288, 54.60563723875567', 'abuDhabi');
             //Recursively call smoothZoom to zoom in 0.5 at a time
-            function smoothZoom(map, maxZoom, curZoom, pos){
+            function smoothZoom(map, maxZoom, curZoom, pos, circuitId){
                 if(curZoom >= maxZoom){
-                    return;
+                    setTimeout(function(){
+                        updatePage(circuitId);
+                        return;
+                    }, 2000);
                 }
                 else{
                     var newZoom = curZoom + 0.5;
                     map.setZoom(newZoom);
                     map.setCenter(pos);
                     setTimeout(function(){
-                        smoothZoom(map, maxZoom, newZoom, pos);
+                        smoothZoom(map, maxZoom, newZoom, pos, circuitId);
                     }, 150);
                 }
             }
