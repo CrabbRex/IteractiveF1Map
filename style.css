@@ -17,6 +17,7 @@
 body{
     height: 1200vh;
     font-family: 'F1-Bold';
+    font-size: 25px;
 }
 
 #myMap{
@@ -24,13 +25,13 @@ body{
     height: 720px;
     border: 3px solid black;
     margin: auto;
-    margin-top: 100px;
+    margin-top: 110px;
 }
 
 .banner{
     width: 100%;
-    background-color: #FF7F7F;
-    color: black;
+    background-color: red;
+    color: white;
     text-align: left;
     position: absolute;
     left: 0;
@@ -40,19 +41,34 @@ body{
 }
 .banner h1{
     padding-left: 15px;
+    margin: 10px;
 }
 
 #tutorial{
     margin-top: 110px;
+    padding-bottom: 25px;
+    padding-top: 25px;
     border: 2px solid black;
     text-align: center;
 }
 
-#reopenMap{
+#tutorialButton{
+    font-family: 'F1-Bold';
     background-color: transparent;
-    border: 2px solid black;
+    border: 2px solid red;
     border-radius: 25px;
-    color: black;
+    color: red;
+    padding: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#reopenMap{
+    font-family: 'F1-Bold';
+    background-color: transparent;
+    border: 2px solid white;
+    border-radius: 25px;
+    color: white;
     padding: 20px;
     text-align: center;
     display: inline-block;
@@ -68,6 +84,12 @@ body{
 
 h2{
     padding-top: 100px;
+    
+}
+h3{
+    padding-top: 50px;
+    font-size: 50px;
+    border-bottom: 10px solid red;
 }
 .circuitInfo{
     margin: auto;
@@ -87,18 +109,25 @@ h2{
     position: absolute;
     top: 125%;
     left: 5%;
+    border: 10px solid red;
+    border-style: solid solid none none;
+    padding-top: 50px;
+    border-bottom: 150px;
+    border-left: 250px;
+    border-top-right-radius: 20px;
+    padding-bottom: 50px;
 }
 
 .fixed{
     position: fixed;
-    top: 35%;
+    top: 30%;
     left: 14.3%;
 }
 .Charles{
     position: absolute;
     right: 5%;
     width: 375px;
-    top: 550%;
+    top: 500%;
     cursor: pointer;
 }
 .CharlesFixed{
@@ -110,10 +139,12 @@ h2{
 }
 
 #fastestLap{
+    border: 10px solid red;
+    border-radius: 10px;
     position: fixed;
     width: 50%;
     left: 100px;
-    top: 35%;
+    top: 30%;
     z-index: 2;
 }
 
@@ -123,45 +154,50 @@ h2{
 #p1{
     left: 50%;
     position: absolute;
-    top: 230%;
-    text-align: left;
+    top: 210%;
+    align-items: center;
     padding-left: auto;
+    display: flex;
+    justify-content: center;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 #p2{
     position: absolute;
-    top: 375%;
+    top: 320%;
     left: 50%;
-    text-align: center;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 #p3{
     position: absolute;
-    top: 450%;
+    top: 430%;
     left: 50%;
     text-align: center;
     margin-right: auto;
 }
-h3{
-    padding-top: 50px;
-    font-size: 50px;
-}
+
 #p4{
     position: absolute;
     top: 550%;
-    left: 10%;
+    right: 65%;
     text-align: center;
-    margin-left: auto;
+    margin-right: auto;
 }
 #p5{
     position: absolute;
     top: 650%;
-    left: 10%;
+    right: 65%;
     text-align: center;
     margin-left: auto;
 }
 #p6{
     position: absolute;
     top: 750%;
-    left: 10%;
+    right: 65%;
     text-align: center;
     margin-left: auto;
 }
@@ -171,4 +207,9 @@ h3{
     left: 10%;
     text-align: center;
     margin-left: auto;
+}
+#p8{
+    position: absolute;
+    top: 950%;
+    font-size: 50px;
 }

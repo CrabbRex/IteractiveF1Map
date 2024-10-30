@@ -76,7 +76,7 @@
                     }, 150);
                 }
             }
-
+            
             //Reopen Map BUTTON:
             $('#reopenMap').click(function(){
                 mapShowing = true;
@@ -86,11 +86,15 @@
                 myMap.setCenter();
             })
             
-            var arrowOffSet = $('.Arrow').offset().top;
             $(document).scroll(function() {
+                let triggerElement = $('.Arrow');
+                let arrowOffSet = triggerElement.offset().top;
+                let triggerPoint = arrowOffSet - (($(window).height())/2)
                 let windowHeight = $(window).height();
                 var scrollTop = $(this).scrollTop();
                 console.log($(this).scrollTop());
+                console.log("offset: " + arrowOffSet);
+                console.log("triggerpoint: " + triggerPoint);
                 if(scrollTop >= 695 && scrollTop <= 3700){
                     $('.Arrow').addClass('fixed');
                 }
@@ -98,11 +102,15 @@
                     $('.Arrow').removeClass('fixed');
                 }
 
-                if(scrollTop >= 4300 && scrollTop < 9000){
+                if(scrollTop >= 4300 && scrollTop < 7025){
                     $('.Charles').addClass('CharlesFixed');
                 }
                 else{
                     $('.Charles').removeClass('CharlesFixed');
+                }
+                if(scrollTop > 7025){
+                    $('#fastestLap')[0].pause();
+                    $('#fastestLap').hide();
                 }
             })
 
@@ -128,15 +136,15 @@
     </div>
 
     <div id="tutorial">
-        <p>
-            Welcome to the Interactive Formula 1 Map!<br>
-            This map relates to the current 2024 Formula 1 season.<br>
-            <br>
-            How it works:<br>
-            Pick your favourite palce on the Formula 1 calander using the map.<br>
-            Scroll to find out more about that track.<br>
-            Choose a new track using the button in the top right<br>
-        </p>
+        <p style="color: red">Welcome to the Interactive F1 Map!</p>
+        <p>This map is for the current 2024 Formula 1 Season and includes all 24 race venues.</p>
+        <p></p>
+        <p>Here's how it works: </p>
+        <p>1. Pick your favourite race on the Formula 1 calendar using the Interactive Map.</p>
+        <p>2. Scroll down to find out more about your favourite track.</p>
+        <p>3. If you want to choose a new track, use the button in the top right, or scroll to the end.</p>
+        <p></p>
+        <p>Have Fun!</p>
         <button id="tutorialButton">Get Started!</button>
     </div>
 
@@ -163,6 +171,11 @@
         <p id="p6">Do you want to see it?</p>
         <p id="p7">Click on me!</p>
             <!-- <caption>Charles Leclerc</caption> -->
+        <!-- <p id="p8">Can you guess who has the most wins at the Albert Park Circuit?</p>
+        <p id="p9">They have 7 World Championships!</p>
+        <p id="p10">They drove for Jordan, Benetton, Ferarri & Mercedes</p>
+        <p id="p11">Got a Guess?</p>
+        <p id="p12">Click here to find out!</p> -->
     </div>
 </body>
 </html>
