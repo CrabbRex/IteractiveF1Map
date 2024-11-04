@@ -14,10 +14,25 @@
     src: url(Formula1-Wide.otf);
 }
 
-body{
-    height: 1200vh;
+.body{
+    height: 1vh;
     font-family: 'F1-Bold';
     font-size: 25px;
+}
+.bodyMapNotShowing{
+    height: 1600vh;
+    font-family: 'F1-Bold';
+    font-size: 25px;
+}
+
+.fadeIn{
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s, transform 0.5s;
+}
+.visible{
+    opacity: 0.5;
+    transform: translateY(0);
 }
 
 #myMap{
@@ -89,6 +104,7 @@ h2{
 h3{
     padding-top: 50px;
     font-size: 50px;
+    margin: 0;
     border-bottom: 10px solid red;
 }
 .circuitInfo{
@@ -127,12 +143,13 @@ h3{
     position: absolute;
     right: 5%;
     width: 375px;
+    height: 525px;
     top: 500%;
     cursor: pointer;
 }
 .CharlesFixed{
     position: fixed;
-    top: 25%;
+    top: 20%;
     width: 25%;
     right: 15%;
     cursor: pointer;
@@ -182,34 +199,92 @@ h3{
 
 #p4{
     position: absolute;
-    top: 550%;
+    top: 600%;
     right: 65%;
     text-align: center;
     margin-right: auto;
 }
 #p5{
     position: absolute;
-    top: 650%;
+    top: 710%;
     right: 65%;
     text-align: center;
     margin-left: auto;
 }
 #p6{
     position: absolute;
-    top: 750%;
+    top: 820%;
     right: 65%;
     text-align: center;
     margin-left: auto;
 }
 #p7{
     position: absolute;
-    top: 850%;
+    top: 930%;
     left: 10%;
     text-align: center;
     margin-left: auto;
 }
 #p8{
     position: absolute;
-    top: 950%;
+    top: 1000%;
     font-size: 50px;
+}
+#p9{
+    position: absolute;
+    top: 1110%;
+    font-size: 50px;
+}
+#p10{
+    position: absolute;
+    top: 1220%;
+    font-size: 50px;
+}
+#p11{
+    position: absolute;
+    top: 1330%;
+    font-size: 50px;
+}
+#findOut{
+    font-family: 'F1-Bold';
+    position: absolute;
+    top: 1440%;
+    left: 50%;
+    font-size: 50px;
+    transform: translateX(-50%);
+    text-align: center;
+    
+    background-color: transparent;
+    border: 10px solid red;
+    border-radius: 25px;
+    color: black;
+    padding: 20px;
+    cursor: pointer;
+}
+#mostWins p {
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%);
+    width: 75%;
+    
+}
+#Wins {
+    position: absolute;
+    left: 50%;
+    top: 1410%;
+    width: 50%;
+}
+#p12{
+    position: absolute;
+    top: 1420%;
+    left: 5%;
+}
+#p13{
+    position: absolute;
+    top: 1460%;
+    left: 0%;
+}
+footer{
+    position: absolute;
+    top: 1525%;
 }

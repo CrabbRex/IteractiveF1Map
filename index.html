@@ -9,6 +9,7 @@
     <script src="https://mmcc.mq.edu.au/mmcc2041/resources/week8/jquery.ui.map.full.min.js"></script>
     <script>
         $(document).ready(function() { 
+            let arrowOffSet = 0;
             var mapShowing = true;
             let myMap = $('#myMap').gmap({
                 'zoom': 1.9,
@@ -17,23 +18,28 @@
 
             //called when marker is clicked
             function updatePage(showId) {
-                //setTimeout(function() {
-                    if(mapShowing) {
-                        $('#myMap').show();
-                        $('.circuitInfo').hide();
-                    }
-                    else{
-                        $('#myMap').hide();
-                        $('#' + showId).show();
-                        $('#fastestLap').hide();
-                    }
-                //}, 7000);
+                if(mapShowing) {
+                    $('#myMap').show();
+                    $('.circuitInfo').hide();
+                    $('#body').addClass('body');
+                }
+                else{
+                    $('#body').addClass('bodyMapNotShowing');
+                    $('#myMap').hide();
+                    $('#Winner').hide();
+                    $('#' + showId).show();
+                    let triggerElement = $('.Arrow');
+                    arrowOffSet = triggerElement.offset().top + 1;
+                }
             }
+            $('#body').addClass('body');
+            $('#fastestLap').hide();
             $('.circuitInfo').hide();
 
             function addMarker(position, circuitId) {
                 $('#myMap').gmap('addMarker', {'position': position}).click(function() {
                     var markerPos = new google.maps.LatLng(position.split(',')[0], position.split(',')[1]);
+                    $('#tutorial').slideUp(); //If tutorial not closed by marker clicked, auto close tutorial.
                     smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos, circuitId);
                     mapShowing = false;
                 });
@@ -65,6 +71,7 @@
             function smoothZoom(map, maxZoom, curZoom, pos, circuitId){
                 if(curZoom >= maxZoom){
                     setTimeout(function(){
+
                         updatePage(circuitId);
                         return;
                     }, 2000);
@@ -78,6 +85,9 @@
                     }, 150);
                 }
             }
+            $('#tutorialButton').click(function (){
+                $('#tutorial').slideUp();
+            })
             
             //Reopen Map BUTTON:
             $('#reopenMap').click(function(){
@@ -87,24 +97,31 @@
                 myMap.setZoom(1.9);
                 myMap.setCenter();
             })
+
+            $('#findOut').click(function() {
+                $('#Winner').show();
+                $('#findOut').hide();
+            })
             
             $(document).scroll(function() {
-                let triggerElement = $('.Arrow');
-                let arrowOffSet = triggerElement.offset().top;
-                let triggerPoint = arrowOffSet - (($(window).height())/2)
+                
+                let triggerPoint = arrowOffSet + (($(window).height())/2);
                 let windowHeight = $(window).height();
                 var scrollTop = $(this).scrollTop();
-                console.log($(this).scrollTop());
+                console.log("SCROLLTOP: " + $(this).scrollTop());
                 console.log("offset: " + arrowOffSet);
                 console.log("triggerpoint: " + triggerPoint);
-                if(scrollTop >= 695 && scrollTop <= 3700){
+                console.log("Window H/2: " + $(window).height()/2);
+                console.log($('#fastestLap').height());
+                //////////////////////////////////////////////////////
+                if(scrollTop >= 625 && scrollTop <= 3338){
                     $('.Arrow').addClass('fixed');
                 }
                 else {
                     $('.Arrow').removeClass('fixed');
                 }
 
-                if(scrollTop >= 4300 && scrollTop < 7025){
+                if(scrollTop >= 3875 && scrollTop < 7025){
                     $('.Charles').addClass('CharlesFixed');
                 }
                 else{
@@ -116,9 +133,7 @@
                 }
             })
 
-            $('#tutorialButton').click(function (){
-                $('#tutorial').slideUp();
-            })
+            
 
             $('.Charles').click(function() {
                 $('#fastestLap').show();
@@ -131,14 +146,14 @@
             })
     </script>
     </head>
-<body>
+<body id="body">
     <div class="banner">
         <h1>Interactive F1 Map!</h1>
         <button id="reopenMap">Choose Again!</button>
     </div>
 
     <div id="tutorial">
-        <p style="color: red">Welcome to the Interactive F1 Map!</p>
+        <p style="color: red"><u>Welcome to the Interactive F1 Map!</u></p>
         <p>This map is for the current 2024 Formula 1 Season and includes all 24 race venues.</p>
         <p></p>
         <p>Here's how it works: </p>
@@ -173,11 +188,25 @@
         <p id="p6">Do you want to see it?</p>
         <p id="p7">Click on me!</p>
             <!-- <caption>Charles Leclerc</caption> -->
-        <!-- <p id="p8">Can you guess who has the most wins at the Albert Park Circuit?</p>
-        <p id="p9">They have 7 World Championships!</p>
-        <p id="p10">They drove for Jordan, Benetton, Ferarri & Mercedes</p>
-        <p id="p11">Got a Guess?</p>
-        <p id="p12">Click here to find out!</p> -->
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Albert Park Circuit?</p>
+            <p id="p9">They have 7 World Championships!</p>
+            <p id="p10">They drove for Jordan, Benetton, Ferarri & Mercedes</p>
+            <p id="p11">Got a Guess?</p>
+            <button id="findOut">Click here to find out!</button>
+            <!-- image source: https://thefederal.com/sports/25-years-of-michael-schumachers-formula-one-world-title-legacy/ -->
+            
+        </div>
+        <div id="Winner">
+            <img src="assets/Michael_Schumacher_(Ferrari)_-_GP_d'Italia_1998.jpg" id="Wins">
+            <p id="p12">Michael Schumacher!</p>
+            <p id="p13">Fund out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-michael-schumacher.7KdX5nJlTG55vR5JQSbZ21" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from Albert Park Circuit?</p>
+            <p>Watch last years race highlights here: </p>
+            <button id="reopenMap">Pick Another Track Here!</button>
+        </footer>
     </div>
 </body>
 </html>
@@ -187,5 +216,6 @@
             Set by Charles Leclerc in 2022.
         - Fastest Lap - "Want to see my fastest lap? Click me!"
         - Most wins
-        - Tires?
-        - Tires explination? Why these tires? -->
+        - Here's what last years grid looked like.
+        - Want to watch the race highlights? Click here.
+        - Pick Another Track!
