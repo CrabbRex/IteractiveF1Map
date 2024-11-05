@@ -20,7 +20,7 @@
     font-size: 25px;
 }
 .bodyMapNotShowing{
-    height: 1600vh;
+    height: 1450vh;
     font-family: 'F1-Bold';
     font-size: 25px;
 }
@@ -168,63 +168,44 @@ h3{
 .videoRow{
     display: flex;
 }
-#p1{
-    left: 50%;
+/*||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
+.introText{
     position: absolute;
-    top: 210%;
+    left: 75%;
     align-items: center;
-    padding-left: auto;
-    display: flex;
-    justify-content: center;
-    padding-left: 50px;
-    padding-right: 50px;
+    transform: translateX(-50%);
+    min-width: 30vw;
+    font-size: 30px;
+}
+#p1{
+    top: 210%;
 }
 #p2{
-    position: absolute;
     top: 320%;
-    left: 50%;
-    align-items: center;
-    display: flex;
-    justify-content: center;
-    padding-left: 50px;
-    padding-right: 50px;
 }
 #p3{
-    position: absolute;
     top: 430%;
-    left: 50%;
-    text-align: center;
-    margin-right: auto;
 }
-
-#p4{
+.CharlesText{
     position: absolute;
+    right: 75%;
+    transform: translateX(50%);
+    font-size: 30px;
+    min-width: 50vw;
+}
+#p4{
     top: 600%;
-    right: 65%;
-    text-align: center;
-    margin-right: auto;
 }
 #p5{
-    position: absolute;
     top: 710%;
-    right: 65%;
-    text-align: center;
-    margin-left: auto;
 }
 #p6{
-    position: absolute;
     top: 820%;
-    right: 65%;
-    text-align: center;
-    margin-left: auto;
 }
 #p7{
-    position: absolute;
     top: 930%;
-    left: 10%;
-    text-align: center;
-    margin-left: auto;
 }
+/* //////////////////// */
 #p8{
     position: absolute;
     top: 1000%;
@@ -278,13 +259,53 @@ h3{
     position: absolute;
     top: 1420%;
     left: 5%;
+    border: 10px solid red;
+    border-style: solid solid none none;
+    padding-bottom: 50px;
+    font-size: 40px;
+    border-bottom: 150px;
+    border-left: 250px;
+    border-top-right-radius: 20px;
 }
 #p13{
     position: absolute;
     top: 1460%;
     left: 0%;
+    font-size: 30px;
 }
 footer{
     position: absolute;
+    display: grid;
+    grid-template-columns: auto auto;
     top: 1525%;
+    gap: 10px;
+    padding: 10px;
+}
+footer p{
+    text-align: center;
+    padding: 20px 0;
+    font-size: 30px;
+    margin: auto;
+}
+#fp2{
+    margin-left: 30px;
+}
+.exitButton{
+    position: absolute;
+    top: 1550%;
+    background-color: red;
+    padding: 50px;
+    margin-left: auto;
+    transform: translateX(-50%);
+    font-family: 'F1-Bold';
+    background-color: transparent;
+    border: 2px solid red;
+    border-radius: 25px;
+    color: red;
+    padding: 20px;
+    text-align: center;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
 }
