@@ -14,6 +14,10 @@
     src: url(Formula1-Wide.otf);
 }
 
+/* 
+    body and bodyMapNotShowing 
+    used to dynamically change height of screen.
+*/
 .body{
     height: 1vh;
     font-family: 'F1-Bold';
@@ -24,17 +28,7 @@
     font-family: 'F1-Bold';
     font-size: 25px;
 }
-
-.fadeIn{
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.5s, transform 0.5s;
-}
-.visible{
-    opacity: 0.5;
-    transform: translateY(0);
-}
-
+/* Main Page: */
 #myMap{
     width: 1080px;
     height: 720px;
@@ -42,7 +36,25 @@
     margin: auto;
     margin-top: 110px;
 }
+#tutorial{
+    margin-top: 110px;
+    padding-bottom: 25px;
+    padding-top: 25px;
+    border: 2px solid black;
+    text-align: center;
+}
+#tutorialButton{
+    font-family: 'F1-Bold';
+    background-color: transparent;
+    border: 2px solid red;
+    border-radius: 25px;
+    color: red;
+    padding: 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
 
+/* Top of Page: */
 .banner{
     width: 100%;
     background-color: red;
@@ -58,26 +70,6 @@
     padding-left: 15px;
     margin: 10px;
 }
-
-#tutorial{
-    margin-top: 110px;
-    padding-bottom: 25px;
-    padding-top: 25px;
-    border: 2px solid black;
-    text-align: center;
-}
-
-#tutorialButton{
-    font-family: 'F1-Bold';
-    background-color: transparent;
-    border: 2px solid red;
-    border-radius: 25px;
-    color: red;
-    padding: 20px;
-    font-size: 16px;
-    cursor: pointer;
-}
-
 #reopenMap{
     font-family: 'F1-Bold';
     background-color: transparent;
@@ -95,11 +87,10 @@
     right: 20px;
 }
 
-/* Post Track Chosen */
+/* Post Track Being Clikced Chosen */
 
 h2{
     padding-top: 100px;
-    
 }
 h3{
     padding-top: 50px;
@@ -119,6 +110,7 @@ h3{
     height: auto;
 }
 
+/* Arrow functionality w/ changing classes */
 .Arrow{
     height: 350px;
     width: 400px;
@@ -133,7 +125,6 @@ h3{
     border-top-right-radius: 20px;
     padding-bottom: 50px;
 }
-
 .fixed{
     position: fixed;
     top: 30%;
@@ -143,6 +134,8 @@ h3{
     position: absolute;
     top: 420%;
 }
+
+/* Fastest Lap functoanlity w/ changing classes */
 .Charles{
     position: absolute;
     left: 75%;
@@ -162,7 +155,6 @@ h3{
     position: absolute;
     top: 915%;
 }
-
 #fastestLap{
     display: none;
     border: 10px solid red;
@@ -174,10 +166,7 @@ h3{
     z-index: 2;
 }
 
-.videoRow{
-    display: flex;
-}
-/*||||||||||||||||||||||||||||||||||||||||||||||||||||||*/
+/* First absolute text block: */
 .introText{
     position: absolute;
     left: 75%;
@@ -195,6 +184,8 @@ h3{
 #p3{
     top: 430%;
 }
+
+/* Second absolute text block: */
 .CharlesText{
     position: absolute;
     right: 75%;
@@ -214,27 +205,30 @@ h3{
 #p7{
     top: 930%;
 }
-/* //////////////////// */
-#p8{
+
+/* Third absolute text block: */
+#mostWins p {
+    left: 50%;
+    text-align: center;
+    transform: translateX(-50%);
+    width: 75%;
     position: absolute;
-    top: 1000%;
     font-size: 50px;
+}
+#p8{
+    top: 1000%;
 }
 #p9{
-    position: absolute;
     top: 1110%;
-    font-size: 50px;
 }
 #p10{
-    position: absolute;
     top: 1220%;
-    font-size: 50px;
 }
 #p11{
-    position: absolute;
     top: 1330%;
-    font-size: 50px;
 }
+
+/* Findout most wins Button: */
 .findOut{
     font-family: 'F1-Bold';
     position: absolute;
@@ -243,7 +237,6 @@ h3{
     font-size: 50px;
     transform: translateX(-50%);
     text-align: center;
-    
     background-color: transparent;
     border: 10px solid red;
     border-radius: 25px;
@@ -251,19 +244,13 @@ h3{
     padding: 20px;
     cursor: pointer;
 }
-#mostWins p {
-    left: 50%;
-    text-align: center;
-    transform: translateX(-50%);
-    width: 75%;
-    
-}
+
+
 #Wins {
     position: absolute;
     left: 75%;
     top: 1410%;
     width: 500px;
-    
     transform: translate(-50%, 0);
 }
 #p12{
@@ -307,6 +294,8 @@ footer p{
     margin-left: 30px;
     text-decoration: none;
 }
+
+/* Button below footer to reset page: */
 .exitButton{
     position: absolute;
     top: 1550%;
