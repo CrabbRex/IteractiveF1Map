@@ -139,28 +139,37 @@ h3{
     top: 30%;
     left: 14.3%;
 }
+.overFixed{
+    position: absolute;
+    top: 430%;
+}
 .Charles{
     position: absolute;
-    right: 5%;
+    left: 75%;
+    top: 500%;
     width: 375px;
     height: 525px;
-    top: 500%;
     cursor: pointer;
+    transform: translate(-50%, 0);
 }
 .CharlesFixed{
     position: fixed;
     top: 20%;
-    width: 25%;
-    right: 15%;
     cursor: pointer;
+    transform: translate(-71%, 0);
+}
+.CharlesOverFixed{
+    position: absolute;
+    top: 915%;
 }
 
 #fastestLap{
+    display: none;
     border: 10px solid red;
     border-radius: 10px;
     position: fixed;
     width: 50%;
-    left: 100px;
+    left: 75px;
     top: 30%;
     z-index: 2;
 }
@@ -226,7 +235,7 @@ h3{
     top: 1330%;
     font-size: 50px;
 }
-#findOut{
+.findOut{
     font-family: 'F1-Bold';
     position: absolute;
     top: 1440%;
@@ -251,14 +260,19 @@ h3{
 }
 #Wins {
     position: absolute;
-    left: 50%;
+    left: 75%;
     top: 1410%;
-    width: 50%;
+    width: 500px;
+    
+    transform: translate(-50%, 0);
 }
 #p12{
     position: absolute;
     top: 1420%;
-    left: 5%;
+    right: 75%;
+    min-width: 40vw;
+    min-height: 15vw;
+    transform: translateX(50%);
     border: 10px solid red;
     border-style: solid solid none none;
     padding-bottom: 50px;
@@ -269,8 +283,10 @@ h3{
 }
 #p13{
     position: absolute;
-    top: 1460%;
-    left: 0%;
+    top: 1445%;
+    right: 75%;
+    min-width: 40vw;
+    transform: translateX(50%);
     font-size: 30px;
 }
 footer{
@@ -289,6 +305,7 @@ footer p{
 }
 #fp2{
     margin-left: 30px;
+    text-decoration: none;
 }
 .exitButton{
     position: absolute;

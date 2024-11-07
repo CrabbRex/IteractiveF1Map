@@ -8,8 +8,13 @@
     <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
     <script src="https://mmcc.mq.edu.au/mmcc2041/resources/week8/jquery.ui.map.full.min.js"></script>
     <script>
-        $(document).ready(function() { 
-            let arrowOffSet = 0;
+        $(document).ready(function() {
+            //Make global variables to use in document.scroll
+            var p1Offset = 0;
+            var p3Offset = 0;
+            var p4Offset = 0;
+            var p7Offset = 0;
+            //Global boolean to use in updatePage
             var mapShowing = true;
             let myMap = $('#myMap').gmap({
                 'zoom': 1.9,
@@ -28,18 +33,22 @@
                     $('#myMap').hide();
                     $('#Winner').hide();
                     $('#' + showId).show();
-                    let triggerElement = $('.Arrow');
-                    arrowOffSet = triggerElement.offset().top + 1;
+                    p1Offset = $('#' + showId + '#p1').offset().top;
+                    p3Offset = $('#' + showId + '#p3').offset().top;
+                    p4Offset = $('#' + showId + '#p4').offset().top;
+                    p7Offset = $('#' + showId + '#p7').offset().top;
+                    //When window changes, quickly change the scrollTop values to reset the offsets and avoid arrow being on screen before scrolling
+                    $(window).scrollTop(1);
+                    $(window).scrollTop(0);
                 }
             }
             $('#body').addClass('body');
-            $('#fastestLap').hide();
             $('.circuitInfo').hide();
 
             function addMarker(position, circuitId) {
                 $('#myMap').gmap('addMarker', {'position': position}).click(function() {
                     var markerPos = new google.maps.LatLng(position.split(',')[0], position.split(',')[1]);
-                    $('#tutorial').slideUp(); //If tutorial not closed by marker clicked, auto close tutorial.
+                    $('#tutorial').hide(); //If tutorial not closed by marker clicked, auto close tutorial.
                     smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos, circuitId);
                     mapShowing = false;
                 });
@@ -88,71 +97,88 @@
                 $('#tutorial').slideUp();
             })
             
-            //Reopen Map BUTTON:
-            $('#reopenMap').click(function(){
-                mapShowing = true;
-                $('.circuitInfo').hide();
-                $('#myMap').show();
-                myMap.setZoom(1.9);
-                myMap.setCenter();
-            })
-            $('.exitButton').click(function(){
+            //BUTTONS TO REOPEN MAP
+            function resetPage(){
+                //Reset the Most Wins section
+                let currentSection = $('.circuitInfo:visible');
+                let winnerSection = currentSection.find('.Winner');
+                let findOutSection = currentSection.find('.findOut');
+                winnerSection.hide();
+                findOutSection.show();
+
                 mapShowing = true;
                 $('.circuitInfo').hide();
                 $('#myMap').show();
                 myMap.setZoom(1.9);
                 myMap.setCenter();
                 $(window).scrollTop(0);
-                $('#body').css({
-                    height: '1vh'
-                });
-                $('#bodyMapNotShowing').css({
-                    height: '1vh'
-                });
+            }
+            $('#reopenMap').click(function(){
+                resetPage();
+            })
+            $('.exitButton').click(function(){
+                resetPage();
             })
 
-            $('#findOut').click(function() {
-                $('#Winner').show();
-                $('#findOut').hide();
+            $('.circuitInfo .Winner').hide();
+            $('.findOut').click(function() {
+                let currentSection = $('.circuitInfo:visible');
+                let winnerSection = currentSection.find('.Winner');
+                winnerSection.show();
+                $(this).hide();
             })
             
             $(document).scroll(function() {
-                
-                let triggerPoint = arrowOffSet + (($(window).height())/2);
                 let windowHeight = $(window).height();
                 var scrollTop = $(this).scrollTop();
-                console.log("SCROLLTOP: " + $(this).scrollTop());
-                console.log("offset: " + arrowOffSet);
-                console.log("triggerpoint: " + triggerPoint);
-                console.log("Window H/2: " + $(window).height()/2);
-                console.log($('#fastestLap').height());
+                
+                console.log("p1: " + $('#p3').offset().top)
+                console.log("p3 offset: " + $('#p3').offset().top);
+                console.log(scrollTop);
+                let currentSection = $('.circuitInfo:visible');
+                let p1OffsetCurrent = currentSection.find('#p1').offset().top;
+                let p3OffsetCurrent = currentSection.find('#p3').offset().top;
+                let p4OffsetCurrent = currentSection.find('#p4').offset().top;
+                let p7OffsetCurrent = currentSection.find('#p7').offset().top;
+                console.log("1 " + p1OffsetCurrent);
+                console.log("2 " + p3OffsetCurrent);
+                console.log("3 " + p4OffsetCurrent);
+                console.log("4 " + p7OffsetCurrent);
                 //////////////////////////////////////////////////////
-                if(scrollTop >= 625 && scrollTop <= 3338){
-                    $('.Arrow').addClass('fixed');
+                if(scrollTop >= (p1OffsetCurrent)-1000 && scrollTop <= (p3OffsetCurrent - (windowHeight/2) + 55)){
+                    $('.Arrow').removeClass('overFixed').addClass('fixed');
                 }
-                else {
-                    $('.Arrow').removeClass('fixed');
-                }
-
-                if(scrollTop >= 3875 && scrollTop < 7025){
-                    $('.Charles').addClass('CharlesFixed');
+                else if(scrollTop >= (p3OffsetCurrent - (windowHeight/2))) {
+                    $('.Arrow').removeClass('fixed').addClass('overFixed');
                 }
                 else{
-                    $('.Charles').removeClass('CharlesFixed');
+                    $('.Arrow').removeClass('fixed overFixed');
                 }
-                if(scrollTop > 7025){
-                    $('#fastestLap')[0].pause();
-                    $('#fastestLap').hide();
+
+                if(scrollTop >= (p4OffsetCurrent)-1000 && scrollTop < (p7OffsetCurrent - (windowHeight/2) + 100)){
+                    $('.Charles').removeClass('CharlesOverFixed').addClass('CharlesFixed');
+                }
+                else if(scrollTop >= (p7OffsetCurrent - (windowHeight/2))){
+                    $('.Charles').removeClass('CharlesFixed').addClass('CharlesOverFixed');
+                }
+                else{
+                    $('.Charles').removeClass('CharlesFixed CharlesOverFixed');
+                }
+
+                let video = currentSection.find('video');
+                if(scrollTop > (p7OffsetCurrent - (windowHeight/2) + 200)){
+                    video[0].pause();
+                    video.hide();
+                    
                 }
             })
 
-
             $('.Charles').click(function() {
-                $('#fastestLap').show();
-                $('#fastestLap')[0].play();
-                //Start Video.
-                //Video Controls.
-
+                let currentSection = $('.circuitInfo:visible');
+                let video = currentSection.find('video');
+                video.show();
+                video[0].volume = 0.1;
+                video[0].play();
             })
 
             })
@@ -178,10 +204,11 @@
     </div>
 
     <div id="myMap"></div>
-
+    <!-- AUSTRALIA -->
     <div id="australia" class="circuitInfo">
         <h2>Australian Grand Prix</h2>
         <img src="assets/Australia_Circuit.jpg" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/australia-melbourne-grand-prix-circuit.4LZLnnP4nXDFVVD01EdvvG -->
         <h3>Scroll Down For More Info!</h3>
         <!-- Credit: Arrow AI Generated by ChatGPT -->
         <img src="assets/ARROW.png" class="Arrow">
@@ -190,29 +217,29 @@
         <p id="p3" class="introText">
             Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
         </p>
-       
         <video id="fastestLap" controls width="1000">
              <source src="assets/AusLap.mp4">
+             <!-- video source: https://www.youtube.com/watch?v=VsdTCkQBDMA -->
         </video>
-        <img src="assets/CharlesPhoto.png" class="Charles">
-        <p id="p4" class="CharlesText">I'm Charles Leclerc</p>
-        <p id="p5" class="CharlesText">In 2022 I set the fastest lap ever<br> recorded at the Albert Park Circuit!</p>
+        <img src="assets/MaxVerstappen.png" class="Charles">
+        <!-- image source https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+        <p id="p4" class="CharlesText">I'm Max Verstappen</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Albert Park Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
-            <!-- <caption>Charles Leclerc</caption> -->
         <div id="mostWins">
             <p id="p8">Can you guess who has the most wins at the Albert Park Circuit?</p>
             <p id="p9">They have 7 World Championships!</p>
             <p id="p10">They drove for Jordan, Benetton, Ferarri & Mercedes</p>
             <p id="p11">Got a Guess?</p>
-            <button id="findOut">Click here to find out!</button>
-            <!-- image source: https://thefederal.com/sports/25-years-of-michael-schumachers-formula-one-world-title-legacy/ -->
+            <button class="findOut">Click here to find out!</button>
             
         </div>
-        <div id="Winner">
+        <div class="Winner">
             <img src="assets/Michael_Schumacher_(Ferrari)_-_GP_d'Italia_1998.jpg" id="Wins">
+            <!-- image source: https://en.wikipedia.org/wiki/Michael_Schumacher#/media/File:Michael_Schumacher_(Ferrari)_-_GP_d'Italia_1998.jpg -->
             <p id="p12">Michael Schumacher!</p>
-            <p id="p13">Fund out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-michael-schumacher.7KdX5nJlTG55vR5JQSbZ21" target="_blank">here!</a></p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-michael-schumacher.7KdX5nJlTG55vR5JQSbZ21" target="_blank">here!</a></p>
         </div>
         <footer>
             <p>Want more from Albert Park Circuit?</p>
@@ -220,18 +247,359 @@
         </footer>
         <button class="exitButton">Pick Another Track Here!</button>
     </div>
-
+    <!-- BAHRAIN -->
     <div id="bahrain" class="circuitInfo">
         <h2>Bahrain Grand Prix</h2>
-        <img src="assets/Bahrain_Circuit.avif">
+        <img src="assets/Bahrain_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/bahrain-bahrain-international-circuit-sakhir.2CaIdaOTCgQ3Yfnb37NmSS -->
         <h3>Scroll Down For More Info!</h3>
         <!-- Credit: Arrow AI Generated by ChatGPT -->
         <img src="assets/ARROW.png" class="Arrow">
-        <p id="p1">The Bahrain Grand Prix is held at the Bahrain International Circuit.</p>
-        <p id="p2">The first race at the Albert Park crcuit was in 2004.</p>
-        <p id="p3">
+        <p id="p1" class="introText">The Bahrain Grand Prix is held at the Bahrain International Circuit.</p>
+        <p id="p2" class="introText">The first race at the Albert Park crcuit was in 2004.</p>
+        <p id="p3" class="introText">
             Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
         </p>
+
+        <video id="fastestLap" controls width="1000">
+            <source src="assets/BahrainLap.mp4">
+            <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=ugJ-rYS-9JU -->
+       </video>
+       <img src="assets/LewisHamilton.png" class="Charles">
+       <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
+       <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
+       <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Bahrain International Circuit!</p>
+       <p id="p6" class="CharlesText">Do you want to see it?</p>
+       <p id="p7" class="CharlesText">Click on me!</p>
+
+       <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Bahrain Internation Circuit?</p>
+            <p id="p9">They have 7 World Championships!</p>
+            <p id="p10">They have driven for McLaren & Mercedes</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+        
+        </div>
+        <div class="Winner">
+            <img src="assets/LewisHamilton.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
+            <p id="p12">Lewis Hamilton!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-lewis-hamilton.6TbSwzJA2miTUwtnXUHkjk" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Bahrain International Circuit?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- SAUDI -->
+    <div id="saudiArabia" class="circuitInfo">
+        <h2>Saudi Arabian Grand Prix</h2>
+        <img src="assets/Saudi_Arabia_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/racing/2023/saudi-arabia/circuit -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Saudi Arabian Grand Prix is held at the <u style="color: red">Jeddah Corniche Circuit.</u></p>
+        <p id="p2" class="introText">The first race at the Jeddah Corniche Circuit was in 2021.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/SaudiFastestLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=Z65Eh6-rCJo -->
+        </video>
+        <img src="assets/MaxVerstappen.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+        <p id="p4" class="CharlesText">I'm Max Verstappen</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Jeddah Corniche Circuit!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Jeddah Corniche Circuit?</p>
+            <p id="p9">They have 3 World Championships!</p>
+            <p id="p10">They have driven for Redbull</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/MaxVerstappen.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+            <p id="p12">Max Verstappen!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/drivers/max-verstappen" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Jeddah Corniche Circuit?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- AUSTRIA -->
+    <div id="austria" class="circuitInfo">
+        <h2>Austrian Grand Prix</h2>
+        <img src="assets/Austria_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/austria-red-bull-ring-spielberg.1s7EC2bGta7o1thZkVPbbq -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Austraian Grand Prix is held at the <u style="color: red">Red Bull Ring.</u></p>
+        <p id="p2" class="introText">The first race at the Red Bull Ring was in 1963.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/AustriaLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=ZeHcml_DhdM -->
+        </video>
+        <img src="assets/Valterri.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
+        <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Red Bull Ring!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Red Bull Ring?</p>
+            <p id="p9">They have 3 World Championships!</p>
+            <p id="p10">They have driven for Redbull</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/MaxVerstappen.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+            <p id="p12">Max Verstappen!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/drivers/max-verstappen" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Red Bull Ring?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- CHINA -->
+    <div id="china" class="circuitInfo">
+        <h2>Chinese Grand Prix</h2>
+        <img src="assets/China_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/china-shanghai-interational-circuit-shanghai.7ESK3ZQ5DHqihx3DpPZKWL -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Chinese Grand Prix is held at the <u style="color: red">Shanghai International Circuit.</u></p>
+        <p id="p2" class="introText">The first race at the Shanghai International Circuit was in 2004.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/ChinaLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=S00mlx6l7b8 -->
+        </video>
+        <img src="assets/Valterri.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
+        <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
+        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever<br> recorded at the Shanghai International Circuit!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Shanghai International Circuit?</p>
+            <p id="p9">They have 7 World Championships!</p>
+            <p id="p10">They have driven for McLaren and Mercedes</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/LewisHamilton.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
+            <p id="p12">Lewis Hamilton!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-lewis-hamilton.6TbSwzJA2miTUwtnXUHkjk" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Shanghai International Circuit?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- JAPAN -->
+    <div id="japan" class="circuitInfo">
+        <h2>Japanese Grand Prix</h2>
+        <img src="assets/Japan_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/japan-suzuka-international-racing-course.2XjOiKgIHRRBVVpp5N3S5t -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Japanese Grand Prix is held at the <u style="color: red">Suzuka Circuit.</u></p>
+        <p id="p2" class="introText">The first race at the Suzuka Circuit was in 1963.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/JapanLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=hDYH8gsNga4 -->
+        </video>
+        <img src="assets/LewisHamilton.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
+        <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
+        <p id="p5" class="CharlesText">In 2017 I set the fastest lap ever<br> recorded at the Suzuka Circuit!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Suzuka Circuit?</p>
+            <p id="p9">They have 7 World Championships!</p>
+            <p id="p10">They drove for Jordan, Benetton, Ferarri & Mercedes</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/Michael_Schumacher_(Ferrari)_-_GP_d'Italia_1998.jpg" id="Wins">
+            <!-- image source: https://en.wikipedia.org/wiki/Michael_Schumacher#/media/File:Michael_Schumacher_(Ferrari)_-_GP_d'Italia_1998.jpg -->
+            <p id="p12">Michael Schumacher!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-michael-schumacher.7KdX5nJlTG55vR5JQSbZ21" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Suzuka Circuit?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- MIAMI -->
+    <div id="miami" class="circuitInfo">
+        <h2>Miami Grand Prix</h2>
+        <img src="assets/Miami_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/racing/2024/miami/circuit -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Miami Grand Prix is held at the <u style="color: red">Miami International Autodrome.</u></p>
+        <p id="p2" class="introText">The first race at the Miami International Autodrome was in 2022.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/MiamiLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=zJRswyrJ7XY -->
+        </video>
+        <img src="assets/SergioPerez.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/sergio-perez -->
+        <p id="p4" class="CharlesText">I'm Sergio Perez</p>
+        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever<br> recorded at the Miami International Autodrome!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Miami International Autodrome?</p>
+            <p id="p9">They have 3 World Championships!</p>
+            <p id="p10">They have driven for Red Bull</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/MaxVerstappen.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+            <p id="p12">Max Verstappen!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/drivers/max-verstappen" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Miami International Autodrome?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- IMOLA -->
+    <div id="imola" class="circuitInfo">
+        <h2>Emilia Romagna Grand Prix</h2>
+        <img src="assets/Emilia_Romagna_Circuit.avif" class="circuit">
+        <!-- image source: https://www.formula1.com/en/racing/2024/emiliaromagna/circuit -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Emilia Romagna Grand Prix is held at the <u style="color: red">Autodromo Internazionale Enzo e Dino Ferrari.</u></p>
+        <p id="p2" class="introText">The first race at the Autodromo Internazionale Enzo e Dino Ferrari was in 2020.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/ImolaLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=_acrCQuCy-8 -->
+        </video>
+        <img src="assets/Valterri.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
+        <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Autodromo Internazionale Enzo e Dino Ferrari!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Autodromo Internazionale Enzo e Dino Ferrari?</p>
+            <p id="p9">They have 3 World Championships!</p>
+            <p id="p10">They have driven for Red Bull</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/MaxVerstappen.png" id="Wins">
+            <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
+            <p id="p12">Max Verstappen!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/drivers/max-verstappen" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Miami International Autodrome?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
+    </div>
+    <!-- MONACO -->
+    <div id="monaco" class="circuitInfo">
+        <h2>Monaco Grand Prix</h2>
+        <!-- LOW QUALITY NEEDS FIX -->
+        <img src="assets/Monaco.png" class="circuit">
+        <!-- image source: https://www.formula1.com/en/information/monaco-circuit-de-monaco-monte-carlo.2ZWRtIcSI6ZzVGX1uGRpkJ -->
+        <h3>Scroll Down For More Info!</h3>
+        <!-- Credit: Arrow AI Generated by ChatGPT -->
+        <img src="assets/ARROW.png" class="Arrow">
+        <p id="p1" class="introText">The Monaco Grand Prix is held at the <u style="color: red">Circuit de Monaco.</u></p>
+        <p id="p2" class="introText">The first race at the Circuit de Monaco was in 1929.</p>
+        <p id="p3" class="introText">
+            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+        </p>
+       
+        <video id="fastestLap" controls width="1000">
+             <source src="assets/MonacoLap.mp4">
+             <!-- video source: F1 Youtube: https://www.youtube.com/watch?v=TmJFVfU1RuI -->
+        </video>
+        <img src="assets/CharlesPhoto.png" class="Charles">
+        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/charles-leclerc -->
+        <p id="p4" class="CharlesText">I'm Charles Leclerc</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Circuit de Monaco!</p>
+        <p id="p6" class="CharlesText">Do you want to see it?</p>
+        <p id="p7" class="CharlesText">Click on me!</p>
+        <div id="mostWins">
+            <p id="p8">Can you guess who has the most wins at the Circuit de Monaco?</p>
+            <p id="p9">They have 3 World Championships!</p>
+            <p id="p10">They have driven for Toleman, Lotus, McLaren & Williams</p>
+            <p id="p11">Got a Guess?</p>
+            <button class="findOut">Click here to find out!</button>
+            
+        </div>
+        <div class="Winner">
+            <img src="assets/Ayrton_Senna_9_(cropped).jpg" id="Wins">
+            <!-- image source: https://en.wikipedia.org/wiki/Ayrton_Senna -->
+            <p id="p12">Ayrton Senna!</p>
+            <p id="p13">Find out more about him <a href="https://www.formula1.com/en/information/drivers-hall-of-fame-ayrton-senna.FLD7ZtO0nUn7JzLEn5rOJ" target="_blank">here!</a></p>
+        </div>
+        <footer>
+            <p>Want more from the Circuit de Monaco?</p>
+            <p id="fp2">Watch last years race highlights here: </p>
+        </footer>
+        <button class="exitButton">Pick Another Track Here!</button>
     </div>
 </body>
 </html>
