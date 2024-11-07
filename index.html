@@ -16,23 +16,30 @@
             var p7Offset = 0;
             //Global boolean to use in updatePage
             var mapShowing = true;
+            //Inital Map
             let myMap = $('#myMap').gmap({
                 'zoom': 1.9,
-                'MapTypeId': google.maps.MapTypeId.TERRAIN
+                'MapTypeId': google.maps.MapTypeId.TERRAIN,
+                'center': google.maps.LatLng(2.9724884205230513, -2.2212867550494684)
             }).gmap('get', 'map');
 
             //called when marker is clicked
+            //Updates page depending on mapShowing Boolean
+            //If true, shows the map and hides track specific info
+            //If false, hides the map and shows (showId) track
             function updatePage(showId) {
                 if(mapShowing) {
                     $('#myMap').show();
                     $('.circuitInfo').hide();
-                    $('#body').addClass('body');
+                    //Depending on what page is showing, the page height changes
+                    $('#body').removeClass('body').addClass('bodyMapNotShowing');
                 }
                 else{
-                    $('#body').addClass('bodyMapNotShowing');
                     $('#myMap').hide();
                     $('#Winner').hide();
                     $('#' + showId).show();
+                    $('#body').removeClass('bodyMapNotShowing').addClass('body');
+                    //When specific track loads, get these 4 offset points for use in document.scroll function.
                     p1Offset = $('#' + showId + '#p1').offset().top;
                     p3Offset = $('#' + showId + '#p3').offset().top;
                     p4Offset = $('#' + showId + '#p4').offset().top;
@@ -42,18 +49,23 @@
                     $(window).scrollTop(0);
                 }
             }
+            //On document load add body's class and hide all circuit info.
             $('#body').addClass('body');
-            $('.circuitInfo').hide();
+            $('.circuitInfo').hide();//Very Important, Don't Delete.
 
+            //Function to Add all circuit markers
             function addMarker(position, circuitId) {
+                //Add marker at specific position parameter, which is triggered when clicked.
                 $('#myMap').gmap('addMarker', {'position': position}).click(function() {
+                    //Parse position parameter into LatLng object for google maps api.
                     var markerPos = new google.maps.LatLng(position.split(',')[0], position.split(',')[1]);
                     $('#tutorial').hide(); //If tutorial not closed by marker clicked, auto close tutorial.
-                    smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos, circuitId);
+                    smoothZoom(myMap, 14.5, myMap.getZoom(), markerPos, circuitId);//Call smoothZoom recursive function.
                     mapShowing = false;
                 });
             }
-            addMarker('26.0321,50.5108', 'bahrain');
+            //Add all the markers using above function.
+            addMarker('26.0321, 50.5108', 'bahrain');
             addMarker('21.63194, 39.1044', 'saudiArabia');
             addMarker('47.21972, 14.76472', 'austria');
             addMarker('-37.8470, 144.9740', 'australia');
@@ -76,14 +88,19 @@
             addMarker('36.11000572950081, -115.16194624550671', 'vegas');
             addMarker('25.488765723411916, 51.450521254127864', 'qatar');
             addMarker('24.469924007404288, 54.60563723875567', 'abuDhabi');
-            //Recursively call smoothZoom to zoom in 0.5 at a time
+
+            //Recursively call smoothZoom to zoom in 0.5 at a time 
+            //with a wait of 150ms in between each zoom for smooth zooming.
             function smoothZoom(map, maxZoom, curZoom, pos, circuitId){
                 if(curZoom >= maxZoom){
+                    //When reached maxZoom, wait 2 seconds.
                     setTimeout(function(){
+                        //when done, call updatePage to change the page/
                         updatePage(circuitId);
                         return;
                     }, 2000);
                 }
+                //Zooming in recursively 
                 else{
                     var newZoom = curZoom + 0.5;
                     map.setZoom(newZoom);
@@ -93,26 +110,34 @@
                     }, 150);
                 }
             }
+            //If tutorial button is clicked, slideUp.
             $('#tutorialButton').click(function (){
                 $('#tutorial').slideUp();
             })
             
-            //BUTTONS TO REOPEN MAP
+            //Function for buttons to reopen map.
             function resetPage(){
                 //Reset the Most Wins section
+                /* 
+                    Select the currently visible '.circuitInfo' (or the selected track).
+                    Use this to find needed elements in the HTML.
+                    Uses retrieved elements.
+                */
                 let currentSection = $('.circuitInfo:visible');
                 let winnerSection = currentSection.find('.Winner');
                 let findOutSection = currentSection.find('.findOut');
                 winnerSection.hide();
                 findOutSection.show();
 
+                //reset page to show map.
                 mapShowing = true;
                 $('.circuitInfo').hide();
                 $('#myMap').show();
                 myMap.setZoom(1.9);
-                myMap.setCenter();
-                $(window).scrollTop(0);
+                myMap.setCenter(new google.maps.LatLng(2.9724884205230513, -2.2212867550494684));
+                $(window).scrollTop(0);//Scroll to top.
             }
+            //2 buttons to reset page call above function.
             $('#reopenMap').click(function(){
                 resetPage();
             })
@@ -120,41 +145,42 @@
                 resetPage();
             })
 
+            //Start with hidden .Winner that get shown() later.
             $('.circuitInfo .Winner').hide();
+            //Function to show the driver with most wins at specific track
             $('.findOut').click(function() {
+                //Reused code logic, see line 121-125.
                 let currentSection = $('.circuitInfo:visible');
                 let winnerSection = currentSection.find('.Winner');
                 winnerSection.show();
                 $(this).hide();
             })
             
+            //Each time user scrolls:
             $(document).scroll(function() {
+                //Updating variables for logical use.
                 let windowHeight = $(window).height();
                 var scrollTop = $(this).scrollTop();
-                
-                console.log("p1: " + $('#p3').offset().top)
-                console.log("p3 offset: " + $('#p3').offset().top);
-                console.log(scrollTop);
+
+                //Reused code logic, see line 121-125.
+                //With added .offset().top to find specfic positions on the page.
                 let currentSection = $('.circuitInfo:visible');
                 let p1OffsetCurrent = currentSection.find('#p1').offset().top;
                 let p3OffsetCurrent = currentSection.find('#p3').offset().top;
                 let p4OffsetCurrent = currentSection.find('#p4').offset().top;
                 let p7OffsetCurrent = currentSection.find('#p7').offset().top;
-                console.log("1 " + p1OffsetCurrent);
-                console.log("2 " + p3OffsetCurrent);
-                console.log("3 " + p4OffsetCurrent);
-                console.log("4 " + p7OffsetCurrent);
-                //////////////////////////////////////////////////////
+                //If users scrolling between set points, .Arrow element becomes fixed or absolute.
+                //If user scrolls past set point, change to leave at bottom, then pick back up if user scroll up.
                 if(scrollTop >= (p1OffsetCurrent)-1000 && scrollTop <= (p3OffsetCurrent - (windowHeight/2) + 55)){
                     $('.Arrow').removeClass('overFixed').addClass('fixed');
                 }
-                else if(scrollTop >= (p3OffsetCurrent - (windowHeight/2))) {
+                else if(scrollTop >= (p3OffsetCurrent - (windowHeight/2) + 55)) {
                     $('.Arrow').removeClass('fixed').addClass('overFixed');
                 }
                 else{
                     $('.Arrow').removeClass('fixed overFixed');
                 }
-
+                //Reused code logic, see line 172 - 173.
                 if(scrollTop >= (p4OffsetCurrent)-1000 && scrollTop < (p7OffsetCurrent - (windowHeight/2) + 100)){
                     $('.Charles').removeClass('CharlesOverFixed').addClass('CharlesFixed');
                 }
@@ -165,17 +191,22 @@
                     $('.Charles').removeClass('CharlesFixed CharlesOverFixed');
                 }
 
+                //Reused code logic, see line 121-125.
                 let video = currentSection.find('video');
                 if(scrollTop > (p7OffsetCurrent - (windowHeight/2) + 200)){
+                    //If user scrolls below bottom of fastest lap section:
+                    //Pause and hide video.
                     video[0].pause();
                     video.hide();
                     
                 }
             })
-
+            //If the fastest lap driver is clicked:
             $('.Charles').click(function() {
+                //Reused code logic, see line 121-125.
                 let currentSection = $('.circuitInfo:visible');
                 let video = currentSection.find('video');
+                //Show the video, play th video and set volume low (F1 cars a loud)
                 video.show();
                 video[0].volume = 0.1;
                 video[0].play();
@@ -203,6 +234,7 @@
         <button id="tutorialButton">Get Started!</button>
     </div>
 
+    <!-- Individual Track's HTML below -->
     <div id="myMap"></div>
     <!-- AUSTRALIA -->
     <div id="australia" class="circuitInfo">
@@ -215,7 +247,7 @@
         <p id="p1" class="introText">The Australian Grand Prix is held at the <u style="color: red">Albert Park Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Albert Park crcuit was in 1988.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
         <video id="fastestLap" controls width="1000">
              <source src="assets/AusLap.mp4">
@@ -224,7 +256,7 @@
         <img src="assets/MaxVerstappen.png" class="Charles">
         <!-- image source https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
         <p id="p4" class="CharlesText">I'm Max Verstappen</p>
-        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Albert Park Circuit!</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever recorded at the Albert Park Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -258,7 +290,7 @@
         <p id="p1" class="introText">The Bahrain Grand Prix is held at the Bahrain International Circuit.</p>
         <p id="p2" class="introText">The first race at the Albert Park crcuit was in 2004.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
 
         <video id="fastestLap" controls width="1000">
@@ -268,7 +300,7 @@
        <img src="assets/LewisHamilton.png" class="Charles">
        <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
        <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-       <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Bahrain International Circuit!</p>
+       <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Bahrain International Circuit!</p>
        <p id="p6" class="CharlesText">Do you want to see it?</p>
        <p id="p7" class="CharlesText">Click on me!</p>
 
@@ -303,7 +335,7 @@
         <p id="p1" class="introText">The Saudi Arabian Grand Prix is held at the <u style="color: red">Jeddah Corniche Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Jeddah Corniche Circuit was in 2021.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -313,7 +345,7 @@
         <img src="assets/MaxVerstappen.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
         <p id="p4" class="CharlesText">I'm Max Verstappen</p>
-        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Jeddah Corniche Circuit!</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever recorded at the Jeddah Corniche Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -347,7 +379,7 @@
         <p id="p1" class="introText">The Austraian Grand Prix is held at the <u style="color: red">Red Bull Ring.</u></p>
         <p id="p2" class="introText">The first race at the Red Bull Ring was in 1963.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -357,7 +389,7 @@
         <img src="assets/Valterri.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
         <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Red Bull Ring!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Red Bull Ring!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -391,7 +423,7 @@
         <p id="p1" class="introText">The Chinese Grand Prix is held at the <u style="color: red">Shanghai International Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Shanghai International Circuit was in 2004.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -401,7 +433,7 @@
         <img src="assets/Valterri.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
-        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever<br> recorded at the Shanghai International Circuit!</p>
+        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever recorded at the Shanghai International Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -435,7 +467,7 @@
         <p id="p1" class="introText">The Japanese Grand Prix is held at the <u style="color: red">Suzuka Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Suzuka Circuit was in 1963.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -445,7 +477,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2017 I set the fastest lap ever<br> recorded at the Suzuka Circuit!</p>
+        <p id="p5" class="CharlesText">In 2017 I set the fastest lap ever recorded at the Suzuka Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -479,7 +511,7 @@
         <p id="p1" class="introText">The Miami Grand Prix is held at the <u style="color: red">Miami International Autodrome.</u></p>
         <p id="p2" class="introText">The first race at the Miami International Autodrome was in 2022.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -489,7 +521,7 @@
         <img src="assets/SergioPerez.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/sergio-perez -->
         <p id="p4" class="CharlesText">I'm Sergio Perez</p>
-        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever<br> recorded at the Miami International Autodrome!</p>
+        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever recorded at the Miami International Autodrome!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -523,7 +555,7 @@
         <p id="p1" class="introText">The Emilia Romagna Grand Prix is held at the <u style="color: red">Autodromo Internazionale Enzo e Dino Ferrari.</u></p>
         <p id="p2" class="introText">The first race at the Autodromo Internazionale Enzo e Dino Ferrari was in 2020.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -533,7 +565,7 @@
         <img src="assets/Valterri.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
         <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Autodromo Internazionale Enzo e Dino Ferrari!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Autodromo Internazionale Enzo e Dino Ferrari!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -568,7 +600,7 @@
         <p id="p1" class="introText">The Monaco Grand Prix is held at the <u style="color: red">Circuit de Monaco.</u></p>
         <p id="p2" class="introText">The first race at the Circuit de Monaco was in 1929.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -578,7 +610,7 @@
         <img src="assets/CharlesPhoto.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/charles-leclerc -->
         <p id="p4" class="CharlesText">I'm Charles Leclerc</p>
-        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Circuit de Monaco!</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever recorded at the Circuit de Monaco!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -612,7 +644,7 @@
         <p id="p1" class="introText">The Monaco Grand Prix is held at the <u style="color: red">Circuit Gilles Villeneuve.</u></p>
         <p id="p2" class="introText">The first race at the Circuit Gilles Villeneuve was in 2002.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -622,7 +654,7 @@
         <img src="assets/SebastianVettel.jpg" class="Charles">
         <!-- image source: https://www.google.com/search?sca_esv=a0b6cc145a6c8085&rlz=1C1RXQR_enAU1033AU1033&sxsrf=ADLYWIIkYIQKc5K1arGUmzpi9__xmt2_BQ:1730940319539&q=sebastian+vettel+f1+profile+australia&udm=2&fbs=AEQNm0Aa4sjWe7Rqy32pFwRj0UkWd8nbOJfsBGGB5IQQO6L3J5MIFhvnvU242yFxzEEp3BfRFWcyM5BvpTgNzM3vKj4sd0YwvsXKiE93XEiAQkwpov3q73VlvX-t4vUzh_CK-Q9-yrbrCA6jPEVhd5czRbqluzhmH8XK9o0zlN-IQ8mQEpGRrtLGIAdoJ0yGhjmjrgJq5y1FNfejqu22xT_9bOL7drs8ig&sa=X&ved=2ahUKEwi8nP6W_8iJAxVs9zgGHfZbBW0QtKgLegQIEhAB#vhid=wlnrCKMZNru98M&vssid=mosaic -->
         <p id="p4" class="CharlesText">I'm Sebastian Vettel</p>
-        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever<br> recorded at the Circuit Gilles Villeneuve!</p>
+        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever recorded at the Circuit Gilles Villeneuve!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -656,7 +688,7 @@
         <p id="p1" class="introText">The Spainish Grand Prix is held at the <u style="color: red">Circuit de Barcelona-Catalunya.</u></p>
         <p id="p2" class="introText">The first race at the Circuit de Barcelona-Catalunya was in 1913.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -666,7 +698,7 @@
         <img src="assets/LandoNorris.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lando-norris -->
         <p id="p4" class="CharlesText">I'm Lando Norris</p>
-        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever<br> recorded at the Circuit de Barcelona-Catalunya!</p>
+        <p id="p5" class="CharlesText">In 2024 I set the fastest lap ever recorded at the Circuit de Barcelona-Catalunya!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -700,7 +732,7 @@
         <p id="p1" class="introText">The British Grand Prix is held at the <u style="color: red">Silverstone Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Silverstone Circuit was in 1926.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -710,7 +742,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Silverstone Circuit!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Silverstone Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -744,7 +776,7 @@
         <p id="p1" class="introText">The Hungarian Grand Prix is held at the <u style="color: red">Hungaroring.</u></p>
         <p id="p2" class="introText">The first race at the Hungaroring was in 1986.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -754,7 +786,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Hungaroring!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Hungaroring!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -788,7 +820,7 @@
         <p id="p1" class="introText">The Belgian Grand Prix is held at the <u style="color: red">Circuit de Spa-Francorchamps.</u></p>
         <p id="p2" class="introText">The first race at the Circuit de Spa-Francorchamps was in 1925.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -798,7 +830,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Circuit de Spa-Francorchamps!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Circuit de Spa-Francorchamps!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -832,7 +864,7 @@
         <p id="p1" class="introText">The Dutch Grand Prix is held at the <u style="color: red">Zandvoort Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Zandvoort Circuit was in 1950.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -842,7 +874,7 @@
         <img src="assets/MaxVerstappen.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
         <p id="p4" class="CharlesText">I'm Max Verstappen</p>
-        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever<br> recorded at the Zandvoort Circuit!</p>
+        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever recorded at the Zandvoort Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -876,7 +908,7 @@
         <p id="p1" class="introText">The Italian Grand Prix is held at the <u style="color: red">Autodromo Nazionale Monza.</u></p>
         <p id="p2" class="introText">The first race at the Autodromo Nazionale Monza was in 1922.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -886,7 +918,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever<br> recorded at the Autodromo Nazionale Monza!</p>
+        <p id="p5" class="CharlesText">In 2020 I set the fastest lap ever recorded at the Autodromo Nazionale Monza!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -920,7 +952,7 @@
         <p id="p1" class="introText">The Azerbaijan Grand Prix is held at the <u style="color: red">Baku City Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Baku City Circuit was in 2017.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -930,7 +962,7 @@
         <img src="assets/CharlesPhoto.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/charles-leclerc -->
         <p id="p4" class="CharlesText">I'm Charles Leclerc</p>
-        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever<br> recorded at the Baku City Circuit!</p>
+        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever recorded at the Baku City Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -964,7 +996,7 @@
         <p id="p1" class="introText">The United States Grand Prix Grand Prix is held at the <u style="color: red">The Circuit of The Americas.</u></p>
         <p id="p2" class="introText">The first race at the The Circuit of The Americas was in 2012.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -974,7 +1006,7 @@
         <img src="assets/Valterri.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
         <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
-        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever<br> recorded at the The Circuit of The Americas!</p>
+        <p id="p5" class="CharlesText">In 2019 I set the fastest lap ever recorded at the The Circuit of The Americas!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1008,7 +1040,7 @@
         <p id="p1" class="introText">The Mexico City Grand Prix is held at the <u style="color: red">Autódromo Hermanos Rodríguez.</u></p>
         <p id="p2" class="introText">The first race at the Autódromo Hermanos Rodríguez was in 1986.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -1018,7 +1050,7 @@
         <img src="assets/Valterri.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/valtteri-bottas -->
         <p id="p4" class="CharlesText">I'm Valtteri Bottas</p>
-        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever<br> recorded at the Autódromo Hermanos Rodríguez!</p>
+        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever recorded at the Autódromo Hermanos Rodríguez!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1052,7 +1084,7 @@
         <p id="p1" class="introText">The Brazilian Grand Prix is held at the <u style="color: red">Autodromo Jose Carlos Pace.</u></p>
         <p id="p2" class="introText">The first race at the Autodromo Jose Carlos Pace was in 1972.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -1062,7 +1094,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2018 I set the fastest lap ever<br> recorded at the Autodromo Jose Carlos Pace!</p>
+        <p id="p5" class="CharlesText">In 2018 I set the fastest lap ever recorded at the Autodromo Jose Carlos Pace!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1096,7 +1128,7 @@
         <p id="p1" class="introText">The Las Vegas Grand Prix is held at the <u style="color: red">Las Vegas Strip Street Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Las Vegas Strip Street Circuit was in 2023.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -1106,7 +1138,7 @@
         <img src="assets/CharlesPhoto.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/charles-leclerc -->
         <p id="p4" class="CharlesText">I'm Charles Leclerc</p>
-        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever<br> recorded at the Las Vegas Strip Street Circuit!</p>
+        <p id="p5" class="CharlesText">In 2023 I set the fastest lap ever recorded at the Las Vegas Strip Street Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1140,7 +1172,7 @@
         <p id="p1" class="introText">The Qatar Grand Prix is held at the <u style="color: red">Lusail International Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Lusail International Circuit was in 2021.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -1150,7 +1182,7 @@
         <img src="assets/LewisHamilton.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/lewis-hamilton -->
         <p id="p4" class="CharlesText">I'm Lewis Hamilton</p>
-        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever<br> recorded at the Lusail International Circuit!</p>
+        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever recorded at the Lusail International Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1184,7 +1216,7 @@
         <p id="p1" class="introText">The Abu Dhabi Grand Prix is held at the <u style="color: red">Yas Marina Circuit.</u></p>
         <p id="p2" class="introText">The first race at the Yas Marina Circuit was in 2009.</p>
         <p id="p3" class="introText">
-            Want to see who got the fastest lap at this circuit?<br> Keep Scrolling!
+            Want to see who got the fastest lap at this circuit? Keep Scrolling!
         </p>
        
         <video id="fastestLap" controls width="1000">
@@ -1194,7 +1226,7 @@
         <img src="assets/MaxVerstappen.png" class="Charles">
         <!-- image source: https://www.grandprix.com.au/fan-zone/driver-profiles/max-verstappen -->
         <p id="p4" class="CharlesText">I'm Max Verstappen</p>
-        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever<br> recorded at the Yas Marina Circuit!</p>
+        <p id="p5" class="CharlesText">In 2021 I set the fastest lap ever recorded at the Yas Marina Circuit!</p>
         <p id="p6" class="CharlesText">Do you want to see it?</p>
         <p id="p7" class="CharlesText">Click on me!</p>
         <div id="mostWins">
@@ -1219,12 +1251,3 @@
     </div>
 </body>
 </html>
-
-<!-- IDEAS:
- Here is a video of the fastest lap EVER recorded at the circuit.<br>
-            Set by Charles Leclerc in 2022.
-        - Fastest Lap - "Want to see my fastest lap? Click me!"
-        - Most wins
-        - Here's what last years grid looked like.
-        - Want to watch the race highlights? Click here.
-        - Pick Another Track!
