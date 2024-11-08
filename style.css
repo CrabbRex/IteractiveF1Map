@@ -135,7 +135,7 @@ h3{
 }
 
 /* Fastest Lap functoanlity w/ changing classes */
-.Charles{
+.fastestDriver{
     position: absolute;
     left: 75%;
     top: 500%;
@@ -146,17 +146,17 @@ h3{
 }
 .fastestCap{
     position: absolute;
-    top: 500%;
+    top: 495%;
     z-index: 100;
     left: 60%;
 }
-.CharlesFixed{
+.fastestDriverFixed{
     position: fixed;
     top: 20%;
     cursor: pointer;
     transform: translate(-71%, 0);
 }
-.CharlesOverFixed{
+.fastestDriverOverFixed{
     position: absolute;
     top: 915%;
 }
@@ -191,7 +191,7 @@ h3{
 }
 
 /* Second absolute text block: */
-.CharlesText{
+.fastestDriverText{
     position: absolute;
     right: 75%;
     transform: translateX(50%);
@@ -306,8 +306,10 @@ footer p{
     margin: auto;
 }
 
-#fp2{
-    text-decoration: none;
+.fp2 a{
+    text-decoration: none !important;
+    color: black;
+    cursor: pointer;
 }
 
 /* Button below footer to reset page: */
@@ -329,9 +331,4 @@ footer p{
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
-}
-
-.mediaWrapper{
-    position: relative;
-    display: inline-block;
 }
